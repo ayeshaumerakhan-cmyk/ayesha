@@ -70,11 +70,11 @@ export default async function ContactPage() {
         </div>
 
         <h1 className="chero__title">
-          <span className="chero__line">
-            <AnimatedChars text={first} />
-            <a href={`mailto:${s.email}`} className="chero__badge" data-cursor="Email" aria-label="Email me">
+          <span className="chero__line chero__line--first">
+            <a href={`mailto:${s.email}`} className="chero__badge" data-cursor="Email me" aria-label="Email me">
               <RotatingBadge text="Email me, write to me" size={150} />
             </a>
+            <AnimatedChars text={first} />
           </span>
           <span className="chero__line">
             <AnimatedChars text={rest} offset={first.length} />

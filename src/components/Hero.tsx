@@ -19,7 +19,7 @@ export function Hero({ settings, chips }: Props) {
         <AnimatedChars text={settings.hero_title} />
       </h1>
 
-      <ScrollButton target="#intro" className="hero__hint" cursor="Scroll">
+      <ScrollButton target="#intro" className="hero__hint" cursor="Scroll down">
         <span className="hero__hint-text">{settings.hero_hint}</span>
         <span className="hero__hint-line" />
       </ScrollButton>

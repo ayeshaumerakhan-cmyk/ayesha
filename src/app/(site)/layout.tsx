@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { SiteProviders } from "@/components/SiteProviders";
 import { getSettings } from "@/lib/data";
 import { SITE_URL } from "@/lib/env";
+import { toLoaderConfig } from "@/lib/loader-shapes";
 import { jsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
@@ -32,7 +33,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
   };
 
   return (
-    <SiteProviders>
+    <SiteProviders loader={toLoaderConfig(s)}>
       <a href="#main" className="skip">
         Skip to content
       </a>

@@ -46,6 +46,8 @@ export type ResourceConfig = {
   publishable?: boolean;
 };
 
+import { LOADER_SHAPE_OPTIONS, LOADER_STYLE_OPTIONS } from "@/lib/loader-shapes";
+
 const today = () => new Date().toISOString().slice(0, 10);
 
 export const projectsConfig: ResourceConfig = {
@@ -210,4 +212,11 @@ export const settingsFields: FieldDef[] = [
   { section: "Search and sharing", name: "seo_title", label: "SEO title", type: "text" },
   { name: "seo_description", label: "SEO description", type: "textarea", help: "Keep it under 160 characters." },
   { name: "og_image_url", label: "Share image", type: "image", help: "1200 by 630 pixels works best." },
+  { section: "Intro loader", name: "loader_enabled", label: "Show the intro loader", type: "select", options: ["yes", "no"], help: "Shown once per visit, before the home page appears." },
+  { name: "loader_shape", label: "Loader shape", type: "select", options: LOADER_SHAPE_OPTIONS, help: "Pick a built-in shape, or choose custom and paste your own path below." },
+  { name: "loader_style", label: "Loader animation", type: "select", options: [...LOADER_STYLE_OPTIONS], help: "draw traces the lines, fill traces then fills, pulse breathes, spin rotates while drawing." },
+  { name: "loader_custom_path", label: "Custom SVG path", type: "textarea", help: "Only used when the shape is custom. Paste the d attribute of an SVG path drawn inside a 100 by 100 box, for example M10 90 L50 10 L90 90 Z." },
+  { name: "loader_label_left", label: "Loader text, top left", type: "text" },
+  { name: "loader_label_right", label: "Loader text, top right", type: "text" },
+  { name: "loader_duration", label: "Loader length in seconds", type: "text", help: "Between 0.8 and 6. The default is 2." },
 ];

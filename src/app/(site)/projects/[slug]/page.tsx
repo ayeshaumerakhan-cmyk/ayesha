@@ -120,7 +120,7 @@ export default async function ProjectPage({ params }: Params) {
       )}
 
       {next && (
-        <TLink href={`/projects/${next.slug}`} className="nextlink" data-cursor="Next">
+        <TLink href={`/projects/${next.slug}`} className="nextlink" data-cursor="Next project">
           <span className="nextlink__small">Next project</span>
           <span className="nextlink__title">{next.title}</span>
         </TLink>

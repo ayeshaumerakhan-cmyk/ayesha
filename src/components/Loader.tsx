@@ -1,19 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Logo } from "@/components/Logo";
+import { LoaderShape } from "@/components/LoaderShape";
+import type { LoaderConfig } from "@/lib/loader-shapes";
 import { useLenis } from "@/components/SmoothScroll";
 
-const DURATION = 2000;
 const FONT_TIMEOUT = 3500;
 
 /**
  * Intro loader. Shows once per browser session:
- * logo draws itself, a counter runs to 100, then the panel lifts away with a curved edge
+ * the chosen shape animates (set in Admin, Site settings), a counter runs to 100, then the panel lifts away with a curved edge
  * and the hero text rises in. Returning visitors in the same session skip it entirely
  * (the inline script in layout.tsx sets the html classes before first paint).
  */
-export function Loader() {
+export function Loader({ config }: { config: LoaderConfig }) {
   const lenis = useLenis();
   const [count, setCount] = useState(0);
   const [leaving, setLeaving] = useState(false);
@@ -25,6 +25,12 @@ export function Loader() {
       setDone(true);
       return;
     }
+    if (!config.enabled) {
+      root.classList.add("loader-done", "is-ready");
+      setDone(true);
+      return;
+    }
+    const DURATION = config.duration * 1000;
     root.classList.add("is-loading");
 
     const start = performance.now();
@@ -79,6 +85,7 @@ export function Loader() {
       cancelAnimationFrame(raf);
       timers.forEach((t) => window.clearTimeout(t));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Freeze smooth scrolling while the loader is up.
@@ -91,16 +98,16 @@ export function Loader() {
     }
   }, [lenis, done]);
 
-  if (done) return null;
+  if (done || !config.enabled) return null;
 
   return (
     <div className="loader" data-leaving={leaving} role="status" aria-label="Loading">
       <div className="loader__top">
-        <span>Ayesha Umera</span>
-        <span>Portfolio 2026</span>
+        <span>{config.labelLeft}</span>
+        <span>{config.labelRight}</span>
       </div>
       <div className="loader__center">
-        <Logo draw showWord={false} className="loader__logo" />
+        <LoaderShape shape={config.shape} customPath={config.customPath} style={config.style} className="loader__shape" />
       </div>
       <div className="loader__bottom">
         <span className="loader__count">{String(count).padStart(3, "0")}</span>

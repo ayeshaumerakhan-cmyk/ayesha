@@ -24,6 +24,13 @@ export type SiteSettings = {
   seo_title: string;
   seo_description: string;
   og_image_url: string;
+  loader_enabled: string;
+  loader_shape: string;
+  loader_style: string;
+  loader_custom_path: string;
+  loader_label_left: string;
+  loader_label_right: string;
+  loader_duration: string;
 };
 
 export type Project = {

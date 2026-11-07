@@ -1,20 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Bodoni_Moda, Hanken_Grotesk } from "next/font/google";
+import { Cormorant_Garamond, Hanken_Grotesk } from "next/font/google";
 import type { ReactNode } from "react";
 import { getSettings } from "@/lib/data";
 import { SITE_URL } from "@/lib/env";
 import "./globals.css";
 
-const display = Bodoni_Moda({
+const display = Cormorant_Garamond({
   subsets: ["latin"],
+  weight: ["300", "400", "500"],
   variable: "--font-display",
   display: "swap",
-  style: ["normal"],
-  axes: ["opsz"],
 });
 
 const body = Hanken_Grotesk({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-body",
   display: "swap",
 });

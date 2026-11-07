@@ -9,14 +9,14 @@ export function JournalTeaser({ posts }: { posts: JournalPost[] }) {
   if (shown.length === 0) return null;
   return (
     <section className="jteaser">
-      <TLink href="/journal" className="jteaser__head" data-cursor="Journal">
+      <TLink href="/journal" className="jteaser__head" data-cursor="Open journal">
         <span className="jteaser__small">Journal</span>
         <h2 className="jteaser__title">My latest notes</h2>
       </TLink>
       <div className="jteaser__grid">
         {shown.map((p, i) => (
           <Reveal key={p.id} variant="mask" delay={i * 110} className={`jteaser__item jteaser__item--${i + 1}`}>
-            <TLink href={`/journal/${p.slug}`} data-cursor="Read">
+            <TLink href={`/journal/${p.slug}`} data-cursor="Read the article">
               <span className="jteaser__img">
                 <Img src={p.cover_url} alt={p.title} sizes="(max-width: 800px) 70vw, 24vw" />
               </span>

@@ -59,7 +59,11 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
     lenisRef.current?.scrollTo(0, { immediate: true });
     timers.current.push(
-      window.setTimeout(() => setPhase("reveal"), 150),
+      window.setTimeout(() => {
+        setPhase("reveal");
+        // New page text and images start animating now, as the curtain lifts.
+        document.documentElement.classList.add("is-ready");
+      }, 150),
       window.setTimeout(() => {
         setPhase("idle");
         busy.current = false;
@@ -89,6 +93,8 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       timers.current.push(
         window.setTimeout(() => {
           pending.current = true;
+          // Curtain is fully closed here. Pause entrance animations until the next page is revealed.
+          document.documentElement.classList.remove("is-ready");
           router.push(path);
           // Safety net: if the route never changes, open the curtain anyway.
           timers.current.push(

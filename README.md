@@ -66,6 +66,25 @@ Sample experience, education and certifications are copied from the LinkedIn pro
 
 Saving in the admin panel clears the page cache, so changes show on the site right away.
 
+## Intro loader (customisable)
+
+In **Admin, Site settings, Intro loader** you can change:
+
+* the shape: arch, circles, nested squares, triangles, diamond, hexagon, orbit, wave, lines, or **custom** (paste any SVG path drawn in a 100 by 100 box)
+* the animation: draw, fill, pulse or spin
+* the two corner labels and how many seconds it runs
+* turn it off entirely
+
+A live preview with a replay button sits right under the custom path field. Existing databases need `supabase/06_loader_settings.sql` once.
+
+## Dependency security
+
+* `next` is pinned to `^15.5.9` and `react` and `react-dom` to `^19.2.3`, which include the patches for the React Server Components advisories.
+* `overrides` forces the PostCSS copy that Next lists to a current release, which clears the common `npm audit` warning.
+* Run `npm run audit` to check production dependencies only.
+* Never run `npm audit fix --force`. It tries to downgrade Next to an ancient version and will break the project.
+* If `npm audit` still lists something, send me the output and I will target it.
+
 ## Deploy
 
 ### Vercel

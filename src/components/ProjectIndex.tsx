@@ -77,7 +77,7 @@ export function ProjectIndex({ projects, variant }: Props) {
             >
               {variant === "home" && <span className="pindex__meta pindex__meta--l">{p.category}</span>}
 
-              <TLink href={`/projects/${p.slug}`} className="pindex__title" data-cursor="View">
+              <TLink href={`/projects/${p.slug}`} className="pindex__title" data-cursor="View project">
                 <span className="pindex__text">{p.title}</span>
               </TLink>
 

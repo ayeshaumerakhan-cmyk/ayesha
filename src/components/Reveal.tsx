@@ -18,6 +18,25 @@ export function Reveal({ children, as: Tag = "div", className = "", variant = "f
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const root = document.documentElement;
+    const cleanups: Array<() => void> = [];
+
+    // Wait for the page to be ready (loader gone, curtain lifting) before revealing.
+    const show = () => {
+      if (root.classList.contains("is-ready")) {
+        el.classList.add("in");
+        return;
+      }
+      const mo = new MutationObserver(() => {
+        if (root.classList.contains("is-ready")) {
+          mo.disconnect();
+          window.setTimeout(() => el.classList.add("in"), 120);
+        }
+      });
+      mo.observe(root, { attributes: true, attributeFilter: ["class"] });
+      cleanups.push(() => mo.disconnect());
+    };
+
     if (typeof IntersectionObserver === "undefined") {
       el.classList.add("in");
       return;
@@ -26,15 +45,16 @@ export function Reveal({ children, as: Tag = "div", className = "", variant = "f
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add("in");
             io.unobserve(entry.target);
+            show();
           }
         });
       },
       { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    cleanups.push(() => io.disconnect());
+    return () => cleanups.forEach((fn) => fn());
   }, []);
 
   const style = { "--delay": `${delay}ms` } as CSSProperties;

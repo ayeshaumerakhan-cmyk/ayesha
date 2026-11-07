@@ -59,7 +59,7 @@ export default async function AboutPage() {
         <h1 className="ahero__title">
           <Headline text={settings.about_headline} highlight={settings.about_highlight} />
         </h1>
-        <ScrollButton target="#experience" className="ahero__badge" cursor="Scroll">
+        <ScrollButton target="#experience" className="ahero__badge" cursor="Read the values">
           <RotatingBadge text="Read my story" size={112} />
         </ScrollButton>
       </section>

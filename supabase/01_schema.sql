@@ -213,3 +213,14 @@ begin
        for each row execute function public.set_updated_at()', t);
   end loop;
 end $$;
+
+-- -----------------------------------------------------------------------------
+-- Loader columns on site_settings (also added by 06_loader_settings.sql for older installs)
+-- -----------------------------------------------------------------------------
+alter table public.site_settings add column if not exists loader_enabled     text;
+alter table public.site_settings add column if not exists loader_shape       text;
+alter table public.site_settings add column if not exists loader_style       text;
+alter table public.site_settings add column if not exists loader_custom_path text;
+alter table public.site_settings add column if not exists loader_label_left  text;
+alter table public.site_settings add column if not exists loader_label_right text;
+alter table public.site_settings add column if not exists loader_duration    text;

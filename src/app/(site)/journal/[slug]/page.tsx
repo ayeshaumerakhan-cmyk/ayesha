@@ -80,7 +80,7 @@ export default async function JournalPostPage({ params }: Params) {
       </div>
 
       {next && (
-        <TLink href={`/journal/${next.slug}`} className="nextlink" data-cursor="Next">
+        <TLink href={`/journal/${next.slug}`} className="nextlink" data-cursor="Next post">
           <span className="nextlink__small">Next post</span>
           <span className="nextlink__title">{next.title}</span>
         </TLink>

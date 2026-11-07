@@ -29,7 +29,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         <a
           href={`mailto:${settings.email}`}
           className="footer__badge"
-          data-cursor="Email"
+          data-cursor="Get in touch"
           aria-label={`Email ${settings.email}`}
         >
           <RotatingBadge text="Get in touch" size={132} />

@@ -34,4 +34,11 @@ export const defaultSettings: SiteSettings = {
   seo_description:
     "Portfolio of Ayesha Umera, a B.Tech AI and ML student from Telangana, India. Projects, journal, experience and certifications from Google Cloud Skills Boost and more.",
   og_image_url: "",
+  loader_enabled: "yes",
+  loader_shape: "arch",
+  loader_style: "draw",
+  loader_custom_path: "",
+  loader_label_left: "Ayesha Umera",
+  loader_label_right: "Portfolio 2026",
+  loader_duration: "2",
 };

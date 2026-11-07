@@ -5,7 +5,7 @@ export function AboutTeaser({ intro }: { intro: string }) {
   return (
     <section className="teaser">
       <p className="teaser__text">{intro}</p>
-      <TLink href="/about" className="teaser__link" data-cursor="About">
+      <TLink href="/about" className="teaser__link" data-cursor="Read my story">
         <span className="teaser__label">Learn more about me</span>
         <RotatingBadge text="Read my story" size={112} />
       </TLink>

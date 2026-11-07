@@ -46,7 +46,7 @@ export function JournalGrid({ posts }: { posts: JournalPost[] }) {
               key={p.id}
               href={`/journal/${p.slug}`}
               className={`jcard jcard--${spans[i % spans.length]}`}
-              data-cursor="Read"
+              data-cursor="Read the article"
               style={{ animationDelay: `${Math.min(i, 8) * 70}ms` }}
             >
               <span className="jcard__meta">

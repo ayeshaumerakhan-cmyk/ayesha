@@ -20,8 +20,11 @@ Open **SQL Editor, New query**, paste each file, press **Run**.
 | 3 | `03_storage.sql` | Creates the public `media` bucket and its upload rules |
 | 4 | `04_make_admin.sql` | Turns one Auth user into an admin (after step 3 below) |
 | 5 | `05_optional_seed.sql` | Creates the empty settings row, optional |
+| 6 | `06_loader_settings.sql` | Only for older installs. Adds the loader columns that `01_schema.sql` now includes |
 
 Every file can be run again safely.
+
+> Already ran an older `01_schema.sql`? Run `06_loader_settings.sql` once to add the intro loader controls.
 
 ## 3. Create the first admin login (done by hand, on purpose)
 

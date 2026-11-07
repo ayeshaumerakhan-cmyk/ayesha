@@ -16,7 +16,7 @@ export function DiscoverBanner({ images }: Props) {
   ];
 
   return (
-    <TLink href="/projects" className="discover" data-cursor="Explore" aria-label="Discover my work">
+    <TLink href="/projects" className="discover" data-cursor="Discover my work" aria-label="Discover my work">
       <div className="discover__stack" aria-hidden="true">
         {pics.map((src, i) => (
           <Parallax

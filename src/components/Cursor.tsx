@@ -3,20 +3,22 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Custom cursor.
+ * Custom cursor, modelled on the reference site.
  *  - default: small dot that follows with easing
  *  - links and buttons: dot grows into a ring
- *  - elements with data-cursor="Label": dot becomes a filled disc showing the label
+ *  - elements with data-cursor="Label": a rotating ring of text with an arrow, like "READ THE ARTICLE"
  * Disabled on touch devices and for reduced-motion users.
  */
 export function Cursor() {
-  const ref = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<SVGTextPathElement>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    const label = labelRef.current;
-    if (!el || !label) return;
+    const dot = dotRef.current;
+    const badge = badgeRef.current;
+    const textPath = textRef.current;
+    if (!dot || !badge || !textPath) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
@@ -25,14 +27,28 @@ export function Cursor() {
 
     let x = window.innerWidth / 2;
     let y = window.innerHeight / 2;
+    let bx = x;
+    let by = y;
     let tx = x;
     let ty = y;
     let raf = 0;
     let shown = false;
+    let current = "";
 
-    const setState = (state: string, text = "") => {
-      el.dataset.state = state;
-      label.textContent = text;
+    const ringText = (label: string) => {
+      const upper = label.toUpperCase();
+      const repeat = Math.max(1, Math.round(26 / (upper.length + 1)));
+      return Array.from({ length: repeat }, () => upper).join(" ") + " ";
+    };
+
+    const setState = (state: string, label = "") => {
+      dot.dataset.state = state;
+      const showBadge = state === "label";
+      badge.dataset.visible = showBadge ? "true" : "false";
+      if (showBadge && label !== current) {
+        current = label;
+        textPath.textContent = ringText(label);
+      }
     };
 
     const move = (e: PointerEvent) => {
@@ -40,9 +56,9 @@ export function Cursor() {
       ty = e.clientY;
       if (!shown) {
         shown = true;
-        x = tx;
-        y = ty;
-        el.dataset.visible = "true";
+        x = bx = tx;
+        y = by = ty;
+        dot.dataset.visible = "true";
       }
     };
 
@@ -63,15 +79,25 @@ export function Cursor() {
 
     const leave = () => {
       shown = false;
-      el.dataset.visible = "false";
+      dot.dataset.visible = "false";
+      badge.dataset.visible = "false";
     };
-    const down = () => (el.dataset.pressed = "true");
-    const up = () => (el.dataset.pressed = "false");
+    const down = () => {
+      dot.dataset.pressed = "true";
+      badge.dataset.pressed = "true";
+    };
+    const up = () => {
+      dot.dataset.pressed = "false";
+      badge.dataset.pressed = "false";
+    };
 
     const loop = () => {
-      x += (tx - x) * 0.2;
-      y += (ty - y) * 0.2;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      x += (tx - x) * 0.22;
+      y += (ty - y) * 0.22;
+      bx += (tx - bx) * 0.14;
+      by += (ty - by) * 0.14;
+      dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      badge.style.transform = `translate3d(${bx}px, ${by}px, 0)`;
       raf = requestAnimationFrame(loop);
     };
     raf = requestAnimationFrame(loop);
@@ -94,10 +120,25 @@ export function Cursor() {
   }, []);
 
   return (
-    <div ref={ref} className="cursor" data-state="default" data-visible="false" aria-hidden="true">
-      <div className="cursor__disc">
-        <span ref={labelRef} className="cursor__label" />
+    <>
+      <div ref={dotRef} className="cursor" data-state="default" data-visible="false" aria-hidden="true">
+        <span className="cursor__dot" />
       </div>
-    </div>
+      <div ref={badgeRef} className="cursor-badge" data-visible="false" aria-hidden="true">
+        <div className="cursor-badge__body">
+          <svg className="cursor-badge__ring" viewBox="0 0 100 100">
+            <defs>
+              <path id="cursor-circle" d="M50 50m-38 0a38 38 0 1 1 76 0a38 38 0 1 1-76 0" />
+            </defs>
+            <text>
+              <textPath ref={textRef} href="#cursor-circle" textLength="237" lengthAdjust="spacing" />
+            </text>
+          </svg>
+          <svg className="cursor-badge__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
+            <path d="M4 12h15M13 6l6 6-6 6" />
+          </svg>
+        </div>
+      </div>
+    </>
   );
 }

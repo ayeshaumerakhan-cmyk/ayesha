@@ -3,7 +3,9 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { revalidateSite } from "@/app/admin/actions";
 import { FieldInput } from "@/components/admin/FieldInput";
+import { LoaderShape } from "@/components/LoaderShape";
 import { settingsFields } from "@/lib/admin-config";
+import { defaultSettings } from "@/lib/defaults";
 import { createClient } from "@/lib/supabase/client";
 
 export function SettingsForm() {
@@ -19,12 +21,19 @@ export function SettingsForm() {
       const { data, error: err } = await supabase.from("site_settings").select("*").eq("id", 1).maybeSingle();
       if (err) setError(err.message);
       const v: Record<string, unknown> = {};
-      for (const f of settingsFields) v[f.name] = data ? ((data as Record<string, unknown>)[f.name] ?? "") : "";
+      for (const f of settingsFields) {
+        const raw = data ? (data as Record<string, unknown>)[f.name] : "";
+        const text = typeof raw === "string" ? raw : "";
+        // Selects always show a real option, so prefill the default when the column is empty.
+        v[f.name] = text === "" && f.type === "select" ? (defaultSettings as unknown as Record<string, string>)[f.name] ?? "" : text;
+      }
       setValues(v);
       setLoading(false);
     };
     run();
   }, []);
+
+  const [replay, setReplay] = useState(0);
 
   const save = async (e: FormEvent) => {
     e.preventDefault();
@@ -56,6 +65,26 @@ export function SettingsForm() {
         <div key={f.name}>
           {f.section && <h3 className="form__section">{f.section}</h3>}
           <FieldInput field={f} value={values[f.name]} onChange={(v) => setValues((p) => ({ ...p, [f.name]: v }))} folder="settings" />
+          {f.name === "loader_custom_path" && (
+            <div className="loader-preview">
+              <div className="loader-preview__stage">
+                <LoaderShape
+                  key={`${replay}-${String(values.loader_shape)}-${String(values.loader_style)}-${String(values.loader_custom_path)}`}
+                  shape={String(values.loader_shape || "arch")}
+                  customPath={String(values.loader_custom_path || "")}
+                  style={String(values.loader_style || "draw")}
+                  className="loader-preview__shape"
+                />
+              </div>
+              <div>
+                <p className="field__label">Live preview</p>
+                <p className="field__help">This is exactly what visitors see in the loader. Invalid custom paths fall back to the arch shape.</p>
+                <button type="button" className="btn btn--ghost" onClick={() => setReplay((n) => n + 1)}>
+                  Replay animation
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       ))}
       {error && <p className="alert">{error}</p>}

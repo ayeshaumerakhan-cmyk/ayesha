@@ -67,7 +67,7 @@ export function ContactForm() {
       {/* Honeypot. Real visitors never see or fill this. */}
       <input name="website" type="text" tabIndex={-1} autoComplete="off" className="cform__trap" aria-hidden="true" />
       <div className="cform__foot">
-        <button type="submit" className="cform__send" disabled={status === "sending"} data-cursor="Send">
+        <button type="submit" className="cform__send" disabled={status === "sending"} data-cursor="Send message">
           {status === "sending" ? "Sending" : "Send message"}
         </button>
         {status === "error" && (
