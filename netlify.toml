@@ -1,14 +1,13 @@
 [build]
   command = "npm run build"
-  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
+  NEXT_TELEMETRY_DISABLED = "1"
 
-# Netlify's Next.js runtime is detected automatically.
-# The plugin below pins it explicitly so ISR, middleware and image optimisation work.
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Do NOT set `publish` and do NOT list the Next.js plugin here.
+# Netlify detects Next.js and configures the runtime automatically.
+# Setting publish = ".next" is a common cause of failed deploys.
 
 [[headers]]
   for = "/admin/*"

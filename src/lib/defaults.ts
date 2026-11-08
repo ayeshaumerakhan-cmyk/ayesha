@@ -21,6 +21,8 @@ export const defaultSettings: SiteSettings = {
   contact_intro: "I would love to hear from you, so don't hesitate to say hi.",
   email: "ayeshaumerakhan@gmail.com",
   phone: "",
+  contact_method: "email",
+  whatsapp_number: "",
   location: "Nizamabad, Telangana, India",
   address: "Nizamabad Mandal\nTelangana, India",
   linkedin_url: "https://www.linkedin.com/in/ayesha-umera-2451a7403",

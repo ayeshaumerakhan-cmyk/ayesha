@@ -7,6 +7,7 @@ type Status = "idle" | "sending" | "sent" | "error";
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
+  const [link, setLink] = useState<{ url: string; method: string } | null>(null);
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -25,13 +26,21 @@ export function ContactForm() {
           website: data.get("website"),
         }),
       });
-      const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; method?: string; url?: string };
       if (!res.ok || !json.ok) {
         setStatus("error");
         setError(json.error || "Something went wrong. Please try again.");
         return;
       }
       form.reset();
+      if (json.url) {
+        setLink({ url: json.url, method: json.method === "whatsapp" ? "whatsapp" : "mailto" });
+        // Browsers may block this popup. The button on the thank-you screen is the fallback.
+        if (json.method === "whatsapp") window.open(json.url, "_blank", "noopener,noreferrer");
+        else window.location.href = json.url;
+      } else {
+        setLink(null);
+      }
       setStatus("sent");
     } catch {
       setStatus("error");
@@ -42,7 +51,23 @@ export function ContactForm() {
   if (status === "sent") {
     return (
       <div className="cform cform--sent" role="status">
-        <p>Thank you. Your message is on its way, and I will reply soon.</p>
+        {link?.method === "whatsapp" ? (
+          <>
+            <p>Almost done. Press send in WhatsApp to deliver your message.</p>
+            <a className="ulink" href={link.url} target="_blank" rel="noopener noreferrer">
+              Open WhatsApp
+            </a>
+          </>
+        ) : link ? (
+          <>
+            <p>Almost done. Press send in your email app to deliver your message.</p>
+            <a className="ulink" href={link.url}>
+              Open email app
+            </a>
+          </>
+        ) : (
+          <p>Thank you. Your message is on its way, and I will reply soon.</p>
+        )}
         <button type="button" className="ulink" onClick={() => setStatus("idle")}>
           Send another message
         </button>

@@ -12,6 +12,8 @@ export type SiteSettings = {
   contact_intro: string;
   email: string;
   phone: string;
+  contact_method: string;
+  whatsapp_number: string;
   location: string;
   address: string;
   linkedin_url: string;
