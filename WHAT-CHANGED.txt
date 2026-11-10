@@ -1,0 +1,5 @@
+Copy these files into your ayesha-umera project, replacing same-path files. No SQL needed.
+- Admin sections (Projects, Journal, Experience, Education, Certifications, Stats, Gallery): the first time you open an empty one, it loads the content the website currently shows, so you can edit/replace/delete it.
+- Site settings: every field is now filled with what the website currently shows.
+- PINTEREST IMAGES: open src/lib/mock-images.ts, paste your i.pinimg.com image links into the list. All sample images switch to them.
+  (If a section was already loaded with the old pictures, change the pictures in the admin or delete the items and reload the page.)

@@ -7,6 +7,7 @@ import type {
   Project,
   Stat,
 } from "@/types";
+import { PINTEREST_IMAGES } from "@/lib/mock-images";
 
 /**
  * SAMPLE CONTENT.
@@ -16,7 +17,10 @@ import type {
  * certifications mirror the client's LinkedIn profile.
  */
 
-const img = (n: number) => `/mock/mock-${String(n).padStart(2, "0")}.jpg`;
+const img = (n: number) =>
+  PINTEREST_IMAGES.length > 0
+    ? PINTEREST_IMAGES[(n - 1) % PINTEREST_IMAGES.length]
+    : `/mock/mock-${String(n).padStart(2, "0")}.jpg`;
 
 export const MOCK_PROJECT_IMAGES = Array.from({ length: 14 }, (_, i) => img(i + 1));
 

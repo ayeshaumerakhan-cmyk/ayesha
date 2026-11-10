@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { revalidateSite } from "@/app/admin/actions";
 import { FieldInput } from "@/components/admin/FieldInput";
 import type { FieldDef, ResourceConfig } from "@/lib/admin-config";
+import { sampleRows } from "@/lib/admin-seed";
+import { USE_MOCK_DATA } from "@/lib/env";
 import { createClient } from "@/lib/supabase/client";
 import { slugify, truncate } from "@/lib/utils";
 
@@ -93,9 +95,56 @@ export function ResourceManager({ config }: { config: ResourceConfig }) {
     setLoading(false);
   }, [config.table, config.orderBy, config.ascending]);
 
+  const [importing, setImporting] = useState(false);
+  const autoTried = useRef(false);
+  const seedKey = `admin-sample-loaded:${config.table}`;
+  const samples = USE_MOCK_DATA ? sampleRows(config.table) : null;
+
+  /** Copies the sample content shown on the website into the database so it can be edited. */
+  const importSamples = useCallback(async () => {
+    if (!samples) return;
+    setImporting(true);
+    const payload = samples.map((src) => {
+      const row: Row = {};
+      for (const f of config.fields) {
+        const v = src[f.name];
+        if (v !== undefined) row[f.name] = v === "" && !f.required ? null : v;
+      }
+      if (config.publishable) row.published = true;
+      return row;
+    });
+    const supabase = createClient();
+    const { error: err } = await supabase.from(config.table).insert(payload);
+    setImporting(false);
+    if (err) {
+      setError(`Could not load the current website content: ${err.message}`);
+      return;
+    }
+    try {
+      window.localStorage.setItem(seedKey, "1");
+    } catch {
+      /* ignore */
+    }
+    await revalidateSite();
+    load();
+  }, [samples, config.fields, config.publishable, config.table, seedKey, load]);
+
   useEffect(() => {
     load();
   }, [load]);
+
+  // First visit to an empty section: load what the website currently shows, once.
+  useEffect(() => {
+    if (loading || error || rows.length > 0 || !samples || autoTried.current) return;
+    autoTried.current = true;
+    let already = false;
+    try {
+      already = window.localStorage.getItem(seedKey) === "1";
+    } catch {
+      /* ignore */
+    }
+    if (!already) importSamples();
+  }, [loading, error, rows.length, samples, seedKey, importSamples]);
 
   const flash = (msg: string) => {
     setNotice(msg);
@@ -217,11 +266,20 @@ export function ResourceManager({ config }: { config: ResourceConfig }) {
           <p className="muted pad">Loading</p>
         ) : rows.length === 0 ? (
           <div className="empty">
-            <p>No {config.title.toLowerCase()} yet.</p>
-            <p className="muted">The public site is showing sample content here. It disappears as soon as you add your first published {config.singular}.</p>
-            <button type="button" className="btn" onClick={() => open("new")}>
-              Add the first {config.singular}
-            </button>
+            <p>{importing ? "Loading the current website content" : `No ${config.title.toLowerCase()} yet.`}</p>
+            {samples ? (
+              <p className="muted">The public site is showing sample content here. Load it to edit, replace or delete every item.</p>
+            ) : null}
+            <div className="row">
+              {samples && (
+                <button type="button" className="btn" disabled={importing} onClick={importSamples}>
+                  {importing ? "Loading" : "Load the current website content"}
+                </button>
+              )}
+              <button type="button" className={samples ? "btn btn--ghost" : "btn"} onClick={() => open("new")}>
+                Add the first {config.singular}
+              </button>
+            </div>
           </div>
         ) : (
           <table>

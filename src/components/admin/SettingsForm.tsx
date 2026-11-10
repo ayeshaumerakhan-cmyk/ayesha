@@ -24,8 +24,8 @@ export function SettingsForm() {
       for (const f of settingsFields) {
         const raw = data ? (data as Record<string, unknown>)[f.name] : "";
         const text = typeof raw === "string" ? raw : "";
-        // Selects always show a real option, so prefill the default when the column is empty.
-        v[f.name] = text === "" && f.type === "select" ? (defaultSettings as unknown as Record<string, string>)[f.name] ?? "" : text;
+        // Empty columns show the text the website currently displays, so everything is editable.
+        v[f.name] = text === "" ? (defaultSettings as unknown as Record<string, string>)[f.name] ?? "" : text;
       }
       setValues(v);
       setLoading(false);
@@ -60,7 +60,7 @@ export function SettingsForm() {
 
   return (
     <form className="card form" onSubmit={save}>
-      <p className="muted">Leave a field empty to use the built-in default text.</p>
+      <p className="muted">Every field shows what the website currently displays. Edit anything and press Save. Emptying a field brings back the built-in default text.</p>
       {settingsFields.map((f) => (
         <div key={f.name}>
           {f.section && <h3 className="form__section">{f.section}</h3>}
